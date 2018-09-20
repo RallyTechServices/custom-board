@@ -1,0 +1,10 @@
+{
+    "className": "Rally.apps.board.BoardApp",
+    "server": "https://rally1.rallydev.com",
+    "sdk": "2.1",
+    "javascript": [
+        "src/javascript/RowSettingsField.js",
+        "src/javascript/Settings.js",
+        "src/javascript/BoardApp.js"
+    ]
+}
