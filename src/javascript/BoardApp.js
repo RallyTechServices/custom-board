@@ -148,8 +148,11 @@
                 },
                 columnConfig: {
                     fields: (this.getSetting('fields') &&
-                        this.getSetting('fields').split(',')) || []
-                }
+                        this.getSetting('fields').split(',')) || [],
+                    plugins: [{
+                        ptype: 'rallycolumncardcounter'
+                    }]
+                },
             };
             if (this.getSetting('showRows')) {
                 Ext.merge(boardConfig, {
