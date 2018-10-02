@@ -34,16 +34,22 @@
         },
 
         launch: function() {
-            Rally.data.ModelFactory.getModel({
-                type: this.getSetting('type'),
-                context: this.getContext().getDataContext()
-            }).then({
-                success: function (model) {
-                    this.model = model;
-                    this.add(this._getGridBoardConfig());
-                },
-                scope: this
-            });
+            Rally.data.util.PortfolioItemHelper.getPortfolioItemTypes().then({
+                scope: this,
+                success: function(portfolioItemTypes) {
+                    this.portfolioItemTypes = portfolioItemTypes;
+                    Rally.data.ModelFactory.getModel({
+                        type: this.getSetting('type'),
+                        context: this.getContext().getDataContext()
+                    }).then({
+                        success: function (model) {
+                            this.model = model;
+                            this.add(this._getGridBoardConfig());
+                        },
+                        scope: this
+                    });
+                }
+            })
         },
 
         _getGridBoardConfig: function() {
@@ -81,6 +87,8 @@
                                 filterChildren: true,
                                 inlineFilterPanelConfig: {
                                     quickFilterPanelConfig: {
+                                        portfolioItemTypes: this.portfolioItemTypes,
+                                        modelName: modelNames[0],
                                         defaultFields: ['ArtifactSearch', 'Owner'],
                                         addQuickFilterConfig: {
                                             blackListFields: blackListFields,
