@@ -6,6 +6,7 @@ Milestone timeboxes are supported, and if on a milestone scoped page, the board 
 set to ignore the current project scope and instead search all projects within the
 workspace.
 
+Additionally, items can be filtered by an ancestor portfolio item. (e.g. filter Features that are ultimately children of the higher level Theme).
 
 ## Development Notes
 
