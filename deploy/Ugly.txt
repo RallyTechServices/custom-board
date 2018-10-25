@@ -3,11 +3,11 @@
 <head>
     <title>custom-board-1.2.0</title>
     <!--  (c) 2017 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Wed Oct 24 2018 23:33:53 GMT+0000 (UTC) -->
+    <!--  Build Date: Thu Oct 25 2018 15:53:19 GMT+0000 (UTC) -->
 
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Wed Oct 24 2018 23:33:53 GMT+0000 (UTC)";
-        var CHECKSUM = 21254419549;
+        var APP_BUILD_DATE = "Thu Oct 25 2018 15:53:19 GMT+0000 (UTC)";
+        var CHECKSUM = 21254427284;
     </script>
 
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>

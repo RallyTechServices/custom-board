@@ -7,6 +7,8 @@ set to ignore the current project scope and instead search all projects within t
 workspace.
 
 Additionally, items can be filtered by an ancestor portfolio item. (e.g. filter Features that are ultimately children of the higher level Theme).
+If placed on a page that also has a [pi-ancestor-filter-broadcaster](https://github.com/RallyTechServices/pi-ancestor-filter-broadcaster),
+and filter by ancestor portfolio item is enabled, it will listen to the broadcaster for the selected ancestor.
 
 ## Development Notes
 
