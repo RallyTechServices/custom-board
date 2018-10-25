@@ -22,8 +22,25 @@
         helpId: 287,
         cls: 'customboard',
         autoScroll: false,
-        layout: 'fit',
-
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        items: [{
+            id: Utils.AncestorPiAppFilter.RENDER_AREA_ID,
+            xtype: 'container',
+            layout: {
+                type: 'hbox',
+                align: 'middle',
+                defaultMargins: '0 10 10 0',
+            }
+        }, {
+            id: 'grid-area',
+            xtype: 'container',
+            flex: 1,
+            type: 'vbox',
+            align: 'stretch'
+        }],
         config: {
             defaultSettings: {
                 type: 'HierarchicalRequirement',
@@ -34,22 +51,52 @@
         },
 
         launch: function() {
-            Rally.data.util.PortfolioItemHelper.getPortfolioItemTypes().then({
-                scope: this,
-                success: function(portfolioItemTypes) {
-                    this.portfolioItemTypes = portfolioItemTypes;
-                    Rally.data.ModelFactory.getModel({
-                        type: this.getSetting('type'),
-                        context: this.getContext().getDataContext()
-                    }).then({
-                        success: function (model) {
-                            this.model = model;
-                            this.add(this._getGridBoardConfig());
-                        },
-                        scope: this
-                    });
+            this.ancestorFilterPlugin = Ext.create('Utils.AncestorPiAppFilter', {
+                ptype: 'UtilsAncestorPiAppFilter',
+                pluginId: 'ancestorFilterPlugin',
+                settingsConfig: {
+                    //labelWidth: 150,
+                    //margin: 10
+                },
+                listeners: {
+                    scope: this,
+                    ready: function(plugin) {
+                        Rally.data.util.PortfolioItemHelper.getPortfolioItemTypes().then({
+                            scope: this,
+                            success: function(portfolioItemTypes) {
+                                this.portfolioItemTypes = portfolioItemTypes;
+                                Rally.data.ModelFactory.getModel({
+                                    type: this.getSetting('type'),
+                                    context: this.getContext().getDataContext()
+                                }).then({
+                                    success: function(model) {
+                                        plugin.addListener({
+                                            scope: this,
+                                            select: function() {
+                                                this._addBoard();
+                                            }
+                                        });
+                                        this.model = model;
+                                        this._addBoard();
+                                    },
+                                    scope: this
+                                });
+                            }
+                        })
+                    },
                 }
-            })
+            });
+            this.addPlugin(this.ancestorFilterPlugin);
+        },
+
+        // Usual monkey business to size gridboards
+        onResize: function() {
+            this.callParent(arguments);
+            var gridArea = this.down('#grid-area');
+            var gridboard = this.down('rallygridboard');
+            if (gridArea && gridboard) {
+                gridboard.setHeight(gridArea.getHeight())
+            }
         },
 
         _getGridBoardConfig: function() {
@@ -58,6 +105,7 @@
             if (this.searchAllProjects()) {
                 dataContext.project = null;
             }
+            var gridArea = this.down('#grid-area');
             var modelNames = [this.getSetting('type')],
                 blackListFields = ['Successors', 'Predecessors', 'DisplayColor'],
                 whiteListFields = ['Milestones', 'Tags'],
@@ -65,10 +113,10 @@
                     xtype: 'rallygridboard',
                     stateful: false,
                     toggleState: 'board',
+                    height: gridArea.getHeight(),
                     cardBoardConfig: this._getBoardConfig(),
-                    plugins: [
-                        {
-                            ptype:'rallygridboardaddnew',
+                    plugins: [{
+                            ptype: 'rallygridboardaddnew',
                             addNewControlConfig: {
                                 stateful: true,
                                 stateId: context.getScopedStateId('board-add-new')
@@ -124,7 +172,7 @@
                         scope: this
                     }
                 };
-            if(this.getEl()) {
+            if (this.getEl()) {
                 config.height = this.getHeight();
             }
             return config;
@@ -150,7 +198,7 @@
                     showIconMenus: true
                 },
                 loadMask: true,
-                plugins: [{ptype:'rallyfixedheadercardboard'}],
+                plugins: [{ ptype: 'rallyfixedheadercardboard' }],
                 storeConfig: {
                     sorters: Rally.data.util.Sorter.sorters(this.getSetting('order'))
                 },
@@ -187,17 +235,15 @@
         },
 
         _shouldDisableRanking: function() {
-            return this.getSetting('type').toLowerCase() === 'task' && 
+            return this.getSetting('type').toLowerCase() === 'task' &&
                 (!this.getSetting('showRows') || this.getSetting('showRows') &&
-                this.getSetting('rowsField').toLowerCase() !== 'workproduct');
+                    this.getSetting('rowsField').toLowerCase() !== 'workproduct');
         },
 
         _addBoard: function() {
-            var gridBoard = this.down('rallygridboard');
-            if(gridBoard) {
-                gridBoard.destroy();
-            }
-            this.add(this._getGridBoardConfig());
+            var gridArea = this.down('#grid-area')
+            gridArea.removeAll();
+            gridArea.add(this._getGridBoardConfig());
         },
 
         onTimeboxScopeChange: function(timeboxScope) {
@@ -214,20 +260,24 @@
             if (timeboxScope && timeboxScope.isApplicable(this.model)) {
                 queries.push(timeboxScope.getQueryFilter());
             }
+            var ancestorFilter = this.ancestorFilterPlugin.getFilterForType(this.model.typePath);
+            if (ancestorFilter) {
+                queries.push(ancestorFilter);
+            }
 
             return queries;
         },
-        
+
         isMilestoneScoped: function() {
             var result = false;
-            
+
             var tbscope = this.getContext().getTimeboxScope();
             if (tbscope && tbscope.getType() == 'milestone') {
                 result = true;
             }
             return result
         },
-        
+
         searchAllProjects: function() {
             var searchAllProjects = this.getSetting('searchAllProjects');
             return this.isMilestoneScoped() && searchAllProjects;
