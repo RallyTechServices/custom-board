@@ -1,4 +1,4 @@
-(function () {
+(function() {
     var Ext = window.Ext4 || window.Ext;
 
     Ext.define('Rally.apps.board.Settings', {
@@ -12,35 +12,22 @@
             'Rally.data.wsapi.Filter'
         ],
 
-        getFields: function (config) {
-            return [
-                {
-                  id:'searchAllProjects',
-                  name:'searchAllProjects',
-                  fieldLabel: 'Scope Across Workspace',
-                  labelAlign: 'left',
-                  xtype:'rallycheckboxfield',
-                  hidden: !config.showSearchAllProjects
-                },
-                {
+        getFields: function(config) {
+            return [{
                     name: 'type',
                     xtype: 'rallycombobox',
                     shouldRespondToScopeChange: true,
                     context: config.context,
                     storeConfig: {
                         model: Ext.identityFn('TypeDefinition'),
-                        sorters: [
-                            {
-                                property: 'Name'
-                            }
-                        ],
+                        sorters: [{
+                            property: 'Name'
+                        }],
                         fetch: ['DisplayName', 'ElementName', 'TypePath', 'Parent'],
-                        filters: [
-                            {
-                                property: 'Creatable',
-                                value: true
-                            }
-                        ],
+                        filters: [{
+                            property: 'Creatable',
+                            value: true
+                        }],
                         autoLoad: false,
                         remoteSort: false,
                         remoteFilter: true
@@ -48,10 +35,10 @@
                     displayField: 'DisplayName',
                     valueField: 'TypePath',
                     listeners: {
-                        select: function (combo, records) {
+                        select: function(combo, records) {
                             combo.fireEvent('typeselected', records[0].get('TypePath'), combo.context);
                         },
-                        ready: function (combo) {
+                        ready: function(combo) {
                             combo.store.sort('DisplayName');
                             combo.store.filterBy(function(record) {
                                 var parent = record.get('Parent'),
@@ -64,7 +51,7 @@
                     bubbleEvents: ['typeselected'],
                     readyEvent: 'ready',
                     handlesEvents: {
-                        projectscopechanged: function (context) {
+                        projectscopechanged: function(context) {
                             this.refreshWithNewContext(context);
                         }
                     }
@@ -75,13 +62,13 @@
                     xtype: 'rallyfieldcombobox',
                     readyEvent: 'ready',
                     handlesEvents: {
-                        typeselected: function (type, context) {
+                        typeselected: function(type, context) {
                             this.refreshWithNewModelType(type, context);
                         }
                     },
                     listeners: {
-                        ready: function (combo) {
-                            combo.store.filterBy(function (record) {
+                        ready: function(combo) {
+                            combo.store.filterBy(function(record) {
                                 var field = record.get('fieldDefinition'),
                                     attr = field.attributeDefinition;
                                 return attr && !attr.ReadOnly && !attr.Hidden && attr.Constrained && attr.AttributeType !== 'COLLECTION' &&
@@ -89,7 +76,7 @@
                                     !_.contains(['Iteration', 'Release', 'Project'], attr.Name) &&
                                     !field.isMappedFromArtifact;
                             });
-                            var fields = Ext.Array.map(combo.store.getRange(), function (record) {
+                            var fields = Ext.Array.map(combo.store.getRange(), function(record) {
                                 return record.get(combo.getValueField());
                             });
                             if (!Ext.Array.contains(fields, combo.getValue())) {
@@ -107,8 +94,8 @@
                     isAllowedFieldFn: function(field) {
                         var attr = field.attributeDefinition;
                         return (attr.Custom && (attr.Constrained || attr.AttributeType.toLowerCase() !== 'string') ||
-                            attr.Constrained || _.contains(['quantity', 'boolean'], attr.AttributeType.toLowerCase()) ||
-                            (!attr.Constrained && attr.AttributeType.toLowerCase() === 'object')) &&
+                                attr.Constrained || _.contains(['quantity', 'boolean'], attr.AttributeType.toLowerCase()) ||
+                                (!attr.Constrained && attr.AttributeType.toLowerCase() === 'object')) &&
                             !_.contains(['web_link', 'text', 'date'], attr.AttributeType.toLowerCase()) &&
                             !_.contains(['PortfolioItemType', 'LastResult'], attr.ElementName);
                     },
@@ -129,8 +116,8 @@
                         }
                     },
                     listeners: {
-                        ready: function (combo) {
-                            combo.store.filterBy(function (record) {
+                        ready: function(combo) {
+                            combo.store.filterBy(function(record) {
                                 var field = record.get('fieldDefinition'),
                                     attr = field.attributeDefinition;
                                 return attr && attr.Sortable && !field.isMappedFromArtifact;

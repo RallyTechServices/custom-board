@@ -45,8 +45,7 @@
             defaultSettings: {
                 type: 'HierarchicalRequirement',
                 groupByField: 'ScheduleState',
-                showRows: false,
-                searchAllProjects: false,
+                showRows: false
             }
         },
 
@@ -229,7 +228,6 @@
         getSettingsFields: function() {
             var config = {
                 context: this.getContext(),
-                showSearchAllProjects: this.isMilestoneScoped()
             }
             return Rally.apps.board.Settings.getFields(config);
         },
@@ -268,19 +266,8 @@
             return queries;
         },
 
-        isMilestoneScoped: function() {
-            var result = false;
-
-            var tbscope = this.getContext().getTimeboxScope();
-            if (tbscope && tbscope.getType() == 'milestone') {
-                result = true;
-            }
-            return result
-        },
-
         searchAllProjects: function() {
-            var searchAllProjects = this.getSetting('searchAllProjects');
-            return this.isMilestoneScoped() && searchAllProjects;
+            return this.ancestorFilterPlugin.getIgnoreProjectScope();
         },
     });
 })();

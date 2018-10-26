@@ -2,13 +2,15 @@
 
 A grid board that allows setting the type, columns, swimlanes, order and data query.
 
-Milestone timeboxes are supported, and if on a milestone scoped page, the board can be
-set to ignore the current project scope and instead search all projects within the
-workspace.
+Milestone timeboxes are supported.
 
 Additionally, items can be filtered by an ancestor portfolio item. (e.g. filter Features that are ultimately children of the higher level Theme).
 If placed on a page that also has a [pi-ancestor-filter-broadcaster](https://github.com/RallyTechServices/pi-ancestor-filter-broadcaster),
 and filter by ancestor portfolio item is enabled, it will listen to the broadcaster for the selected ancestor.
+
+Optionally the board can be
+set to ignore the current project scope and instead search all projects within the
+workspace.
 
 ## Development Notes
 
