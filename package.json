@@ -1,6 +1,6 @@
 {
   "name": "custom-board",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "scripts": {
     "debug": "grunt debug",
     "debug:watch": "nodemon --exec grunt debug",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@agile-central-technical-services/utils-ancestor-pi-app-filter": "^2.3.0",
-    "@agile-central-technical-services/utils-ancestor-pi-inline-filter": "^1.0.12"
+    "@agile-central-technical-services/utils-ancestor-pi-inline-filter": "^1.0.13"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
